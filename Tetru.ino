@@ -32,6 +32,7 @@ RGB LEDS data is on pin 1
 
 #include <Wire.h>
 #include <WiiChuck.h>
+#include <NESpad.h>
 
 //#include <Adafruit_NeoPixel.h>
 #include <SPI.h>
@@ -42,13 +43,14 @@ RGB LEDS data is on pin 1
 //Constants for LED strip.  Hardware SPI can be used by commenting out these defines.
 #define LEDDATAPIN 2
 #define LEDCLKPIN 3
-
+NESpad nintendo = NESpad(4,5,6);
 //Strips are assumed to be zig-zagged horizontally by default. Uncomment VERT_STRIPS to reverse this behavior
 //#define VERT_STRIPS
 
 #define    FIELD_WIDTH 5
 #define    FIELD_HEIGHT 10
 #define    LEDS FIELD_HEIGHT * FIELD_WIDTH
+byte state = 0;
 
 //constants and initialization
 #define UP  0
@@ -261,6 +263,7 @@ void screenTest(){
 // globals, sorry (@RCK)
 int ct = 0;
 void play(){
+  state = nintendo.buttons();
 	ct++; // increment our tick counter
 	if(aiCalculatedAlready == false) {
 		performAI();
@@ -499,9 +502,9 @@ byte getCommand(){
 
   int x = chuck.readJoyX();
   int y = chuck.readJoyY();
-  if (chuck.buttonC) {
-    Serial.println(F("Button C pushed."));
-     useAi = !useAi;
+  if (chuck.buttonC || state & NES_SELECT) {
+    Serial.println(F("Button C pushed. OR SELECT pushed"));
+     useAi = !useAi; //(scola)
      if (useAi) {
     	 colorGrid(Color(255, 0, 0));
      } else {
@@ -523,20 +526,20 @@ byte getCommand(){
   }
  
  
-  if (chuck.buttonZ){
+  if (chuck.buttonZ || state & NES_A){
     Serial.println(F("Button Z pushed."));
     playerMove = UP;
-  } else if (x > 75){
+  } else if (x > 75 || state & NES_RIGHT){
     Serial.print(F("RIGHT: Joy X > 75.("));
     Serial.print(x);
     Serial.println(F(")"));
     playerMove = RIGHT;
-  } else if (x < -75){
+  } else if (x < -75 || state & NES_LEFT){
     Serial.print(F("LEFT: Joy X < -75.("));
     Serial.print(x);
     Serial.println(F(")"));
     playerMove = LEFT;
-  } else if ( y < -75 ){
+  } else if ( y < -75 || state & NES_DOWN ){
     Serial.print(F("DOWN: Joy Y < -75.("));
     Serial.print(y);
     Serial.println(F(")"));
