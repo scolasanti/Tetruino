@@ -525,7 +525,7 @@ byte getCommand(){
   }
  
  
-  if (chuck.buttonZ || state & NES_A){
+  if (chuck.buttonZ || state & NES_A || state & NES_UP || state & NES_B){ //(scola)checks for UP or NES_A or NES_B
     Serial.println(F("Button Z pushed."));
     playerMove = UP;
   } else if (x > 75 || state & NES_RIGHT){
@@ -533,12 +533,12 @@ byte getCommand(){
     Serial.print(x);
     Serial.println(F(")"));
     playerMove = RIGHT;
-  } else if (x < -75 || state & NES_LEFT){
+  } else if (x < -75000 || state & NES_LEFT){
     Serial.print(F("LEFT: Joy X < -75.("));
     Serial.print(x);
     Serial.println(F(")"));
     playerMove = LEFT;
-  } else if ( y < -75 || state & NES_DOWN ){
+  } else if ( y < -7500 || state & NES_DOWN ){
     Serial.print(F("DOWN: Joy Y < -75.("));
     Serial.print(y);
     Serial.println(F(")"));
