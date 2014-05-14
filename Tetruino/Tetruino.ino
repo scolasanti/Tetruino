@@ -46,8 +46,8 @@ RGB LEDS data is on pin 1
 //Strips are assumed to be zig-zagged horizontally by default. Uncomment VERT_STRIPS to reverse this behavior
 //#define VERT_STRIPS
 
-#define    FIELD_WIDTH 5 
-#define    FIELD_HEIGHT 10
+#define    FIELD_WIDTH 10 
+#define    FIELD_HEIGHT 20
 #define    LEDS FIELD_HEIGHT * FIELD_WIDTH
 
 //NESpad initialization
@@ -63,7 +63,7 @@ byte state = 0; //(scola) initial value of NESpad "state"
 
 #define FULL 128
 #define HALF 8 //(scola) set a lower brightness def for testing
-#define setBright HALF //(scola) global def for current brightness setting, choose FULL or HALF, defined above
+#define setBright FULL //(scola) global def for current brightness setting, choose FULL or HALF, defined above
 #define WHITE 0xFF
 #define OFF 0
 
@@ -132,6 +132,7 @@ static PROGMEM prog_uint16_t bricks[ brick_count ][4] = {
 
 //8 bit RGB colors of blocks
 //RRRGGGBB
+//(scola) change to 24 bit color
 static PROGMEM prog_uint8_t brick_colors[brick_count]={
   0b00011111, //cyan
   0b10000010, //purple
@@ -230,7 +231,7 @@ void setup(){
   Serial.begin(115200); 
   strip.begin();
 
-  //Pre-Operating Self Test of LED grid.
+  //Pre-Operating Self Test of LED grid. //50 steps default, reduce to make faste
   fadeGrid(Color(0,0,0), Color(255,0,0), 8, 50);   // fade from off to Red
   fadeGrid(Color(255,0,0), Color(0,255,0), 8, 50); // fade from Red to Green
   fadeGrid(Color(0,255,0), Color(0,0,255), 8, 50); // fade from Green to Blue
@@ -808,7 +809,7 @@ void nextBrick(){
   currentBrick.positionX = round(FIELD_WIDTH / 2) - 2;
   currentBrick.positionY = -3;
 
-  currentBrick.type = random( 0, 6 );
+  currentBrick.type = random(7);
 
   currentBrick.color = pgm_read_byte(&(brick_colors[ currentBrick.type ]));
 
@@ -956,7 +957,7 @@ void gameOver()
   fadeGrid(Color(255, 0, 0), Color(255,255,255),0, 100);
   fadeGrid(Color(255,255,255), Color(0,0,0), 8, 200);
   delay(1500);
-  //dissolveGrid(5, 250);
+ // dissolveGrid(5, 250); //(scola) this is cool, fix it to work better
 
   newGame();
 
