@@ -42,14 +42,17 @@ RGB LEDS data is on pin 1
 //Constants for LED strip.  Hardware SPI can be used by commenting out these defines.
 #define LEDDATAPIN 2
 #define LEDCLKPIN 3
-NESpad nintendo = NESpad(4,5,6);
+
 //Strips are assumed to be zig-zagged horizontally by default. Uncomment VERT_STRIPS to reverse this behavior
 //#define VERT_STRIPS
 
-#define    FIELD_WIDTH 5
+#define    FIELD_WIDTH 5 
 #define    FIELD_HEIGHT 10
 #define    LEDS FIELD_HEIGHT * FIELD_WIDTH
-byte state = 0;
+
+//NESpad initialization
+NESpad nintendo = NESpad(4,5,6); //(scola) sets pins for controller strobe/clock/data per NESpad.h
+byte state = 0; //(scola) initial value of NESpad "state"
 
 //constants and initialization
 #define UP  0
@@ -60,6 +63,7 @@ byte state = 0;
 
 #define FULL 128
 #define HALF 8 //(scola) set a lower brightness def for testing
+#define setBright HALF //(scola) global def for current brightness setting, choose FULL or HALF, defined above
 #define WHITE 0xFF
 #define OFF 0
 
@@ -139,7 +143,7 @@ static PROGMEM prog_uint8_t brick_colors[brick_count]={
   
 };
 
-//You will need to modify this to translate fro x,y to a pixel number.
+//You will need to modify this to translate from x,y to a pixel number.
 uint16_t computeAddress(int row, int col){
 	uint16_t reversed = 0;
 #ifdef VERT_STRIPS
@@ -182,6 +186,7 @@ uint16_t computeAddress(int row, int col){
 
 byte wall[FIELD_WIDTH][FIELD_HEIGHT];
 //The 'wall' is the 2D array that holds all bricks that have already 'fallen' into place
+//(scola) this may need to be altered to be larger than the visible play field
 
 bool aiCalculatedAlready = false;
 bool useAi = true;
@@ -842,7 +847,7 @@ void drawWall(){
   for(int j=0; j < FIELD_WIDTH; j++){
     for(int k = 0; k < FIELD_HEIGHT; k++ )
     {
-      draw(wall[j][k],HALF,j,k);
+      draw(wall[j][k],setBright,j,k);
     }
     
   }
@@ -865,7 +870,7 @@ void drawGame()
       {
         if( currentBrick.positionY + k >= 0 )
         {
-          draw(currentBrick.color, HALF, currentBrick.positionX + j, currentBrick.positionY + k);
+          draw(currentBrick.color, setBright, currentBrick.positionX + j, currentBrick.positionY + k);
           //field[ positionX + j ][ p osition_y + k ] = currentBrick_color;
         }
       }
@@ -931,7 +936,7 @@ void draw(byte color, signed int brightness, byte x, byte y){
     r=(color&0b11100000)>>5;
     
     //make sure brightness value is correct
-    brightness=constrain(brightness,0,FULL);
+    brightness=constrain(brightness,0,setBright);
     
     strip.setPixelColor(address, map(r,0,7,0,brightness), map(g,0,7,0,brightness), map(b,0,3,0,brightness));
 
