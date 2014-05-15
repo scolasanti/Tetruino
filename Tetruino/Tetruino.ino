@@ -39,6 +39,9 @@ RGB LEDS data is on pin 1
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
+//HACKS---------
+#define TROLLBRICK 1 //devserial: 0 turns off troll brick which is a --__ shape
+
 //Constants for LED strip.  Hardware SPI can be used by commenting out these defines.
 #define LEDDATAPIN 2
 #define LEDCLKPIN 3
@@ -59,7 +62,7 @@ byte state = 0; //(scola) initial value of NESpad "state"
 #define DOWN  1
 #define RIGHT  2
 #define LEFT  3
-#define brick_count 7
+#define brick_count 8
 
 #define FULL 128
 #define HALF 8 //(scola) set a lower brightness def for testing
@@ -76,7 +79,7 @@ byte state = 0; //(scola) initial value of NESpad "state"
 //gameplay Settings
 //const bool    display_preview    = 1;
 #define tick_delay 400 //game speed
-#define max_level 9
+#define max_level 9	
 #define bounce_delay 50
 //weight given to the highest column for ai
 #define HIGH_COLUMN_WEIGHT 5
@@ -127,7 +130,13 @@ static PROGMEM prog_uint16_t bricks[ brick_count ][4] = {
     0b0000110001100000,
     0b0000010011001000,
     0b0000110001100000
-  }
+   },
+   {
+    0b0100010010001000,	     //devserial: Secret troll brick
+    0b0000110000110000,
+    0b0100010010001000,
+    0b0000110000110000
+   }
 };
 
 //8 bit RGB colors of blocks
@@ -140,8 +149,8 @@ static PROGMEM prog_uint8_t brick_colors[brick_count]={
   0b11101000, //orange?
   0b00000011, //blue
   0b00011100, //green
-  0b11100000 //red
-  
+  0b11100000, //red
+  0b01101110  //gray
 };
 
 //You will need to modify this to translate from x,y to a pixel number.
@@ -259,7 +268,7 @@ void screenTest(){
     {
       wall[i][k] = 7;
       drawGame();
-      delay(500);
+      delay(100); //devserial: drop from 500ms to 100ms
     }
   }
 }
@@ -516,7 +525,7 @@ byte getCommand(){
     	 colorGrid(Color(0, 255, 0));
      }
      strip.show();
-      delay(250);
+      delay(75); //devserial: drop from 250ms to 75ms.. I'm not sure what the normaly cycle rate on an nes would be but its problably >10/sec
   }
  
   if (useAi){
@@ -808,9 +817,14 @@ void nextBrick(){
   currentBrick.rotation = 0;
   currentBrick.positionX = round(FIELD_WIDTH / 2) - 2;
   currentBrick.positionY = -3;
-
-  currentBrick.type = random(7);
-
+  
+  if ( TROLLBRICK ) //devserial: trollbrick check 
+  {
+    currentBrick.type = random(8);
+  } else {
+    currentBrick.type = random(7);
+  }
+  
   currentBrick.color = pgm_read_byte(&(brick_colors[ currentBrick.type ]));
 
   aiCalculatedAlready = false;
@@ -837,7 +851,7 @@ void flashLine( int line ){
     state = !state;
     drawWall();
     updateDisplay();
-    delay(200);
+    delay(100); //devserial: dropped from 200ms to 100ms, line flashes 6 times so this is .6 second on a break instead of 1.2 sec
   }
 
 }
