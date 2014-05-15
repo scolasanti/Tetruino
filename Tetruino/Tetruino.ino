@@ -245,40 +245,7 @@ void setup(){
   fadeGrid(Color(255,0,0), Color(0,255,0), 8, 50); // fade from Red to Green
   fadeGrid(Color(0,255,0), Color(0,0,255), 8, 50); // fade from Green to Blue
   fadeGrid(Color(0,0,255), Color(0,0,0), 8, 50);   // fade from Blue to Off
-  strip.setPixelColor(151,255,128,0); //devserial: super crude tetris logo test
-  strip.setPixelColor(152,255,128,0);
-  strip.setPixelColor(153,255,128,0);
-  strip.setPixelColor(154,255,128,0);
-  strip.setPixelColor(155,255,128,0);
-  strip.setPixelColor(156,255,128,0);
-  strip.setPixelColor(157,255,128,0);
-  strip.setPixelColor(158,255,128,0);
-  strip.setPixelColor(159,255,128,0);
-  strip.setPixelColor(140,255,128,0);
-  strip.setPixelColor(141,255,128,0);
-  strip.setPixelColor(142,255,128,0);
-  strip.setPixelColor(143,255,128,0);
-  strip.setPixelColor(144,255,128,0);
-  strip.setPixelColor(145,255,128,0);
-  strip.setPixelColor(146,255,128,0);
-  strip.setPixelColor(147,255,128,0);
-  strip.setPixelColor(148,255,128,0);
-  strip.setPixelColor(134,255,128,0);
-  strip.setPixelColor(135,255,128,0);
-  strip.setPixelColor(136,255,128,0);
-  strip.setPixelColor(123,255,128,0);
-  strip.setPixelColor(124,255,128,0);
-  strip.setPixelColor(125,255,128,0);
-  strip.setPixelColor(114,255,128,0);
-  strip.setPixelColor(115,255,128,0);
-  strip.setPixelColor(116,255,128,0);
-  strip.setPixelColor(103,255,128,0);
-  strip.setPixelColor(104,255,128,0);
-  strip.setPixelColor(105,255,128,0);
-  strip.setPixelColor(94,255,128,0);
-  strip.setPixelColor(95,255,128,0);
-  strip.setPixelColor(96,255,128,0);
-  strip.show();
+  showlogo();
   delay(3000);
   fadeGrid(Color(0,0,0), Color(0,0,0), 8, 50);
   Serial.print(F("POST Finished"));
@@ -1087,3 +1054,20 @@ void dissolveGrid(uint16_t pause, uint16_t steps) {
 		delay(pause);
 	}
 }
+
+void showlogo() {		//devserial: tetris logo test
+  int logopix[]={
+  151,152,153,154,155,156,157,158,159,
+  140,141,142,143,144,145,146,147,148,
+	      123,124,125,
+	      114,115,116,
+              103,104,105,
+	      94,95,96
+               };
+  int i;
+  for (i = 0; i<logopix[0]; i++) {
+	  strip.setPixelColor(logopix[i],255,128,0);
+	  delay(15);
+	  strip.show();
+	}
+  }
