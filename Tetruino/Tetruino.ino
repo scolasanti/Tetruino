@@ -254,6 +254,7 @@ void setup(){
   strip.setPixelColor(157,255,128,0);
   strip.setPixelColor(158,255,128,0);
   strip.setPixelColor(159,255,128,0);
+  strip.setPixelColor(140,255,128,0);
   strip.setPixelColor(141,255,128,0);
   strip.setPixelColor(142,255,128,0);
   strip.setPixelColor(143,255,128,0);
@@ -262,24 +263,24 @@ void setup(){
   strip.setPixelColor(146,255,128,0);
   strip.setPixelColor(147,255,128,0);
   strip.setPixelColor(148,255,128,0);
-  strip.setPixelColor(149,255,128,0);
   strip.setPixelColor(134,255,128,0);
   strip.setPixelColor(135,255,128,0);
   strip.setPixelColor(136,255,128,0);
+  strip.setPixelColor(123,255,128,0);
   strip.setPixelColor(124,255,128,0);
   strip.setPixelColor(125,255,128,0);
-  strip.setPixelColor(126,255,128,0);
   strip.setPixelColor(114,255,128,0);
   strip.setPixelColor(115,255,128,0);
   strip.setPixelColor(116,255,128,0);
+  strip.setPixelColor(103,255,128,0);
   strip.setPixelColor(104,255,128,0);
   strip.setPixelColor(105,255,128,0);
-  strip.setPixelColor(106,255,128,0);
   strip.setPixelColor(94,255,128,0);
   strip.setPixelColor(95,255,128,0);
   strip.setPixelColor(96,255,128,0);
+  strip.show();
   delay(3000);
-  fadeGrid(Color(0,0,0), Color(0,0,0), 8, 300);
+  fadeGrid(Color(0,0,0), Color(0,0,0), 8, 50);
   Serial.print(F("POST Finished"));
 
   chuck.begin();
