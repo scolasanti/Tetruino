@@ -40,7 +40,7 @@ RGB LEDS data is on pin 1
 #include <avr/pgmspace.h>
 
 //HACKS---------
-#define TROLLBRICK 1 //devserial: 0 turns off troll brick which is a --__ shape
+#define TROLLBRICK 1            //devserial: 0 turns off troll brick which is a --__ shape
 
 //Constants for LED strip.  Hardware SPI can be used by commenting out these defines.
 #define LEDDATAPIN 2
@@ -245,6 +245,41 @@ void setup(){
   fadeGrid(Color(255,0,0), Color(0,255,0), 8, 50); // fade from Red to Green
   fadeGrid(Color(0,255,0), Color(0,0,255), 8, 50); // fade from Green to Blue
   fadeGrid(Color(0,0,255), Color(0,0,0), 8, 50);   // fade from Blue to Off
+  strip.setPixelColor(151,255,128,0); //devserial: super crude tetris logo test
+  strip.setPixelColor(152,255,128,0);
+  strip.setPixelColor(153,255,128,0);
+  strip.setPixelColor(154,255,128,0);
+  strip.setPixelColor(155,255,128,0);
+  strip.setPixelColor(156,255,128,0);
+  strip.setPixelColor(157,255,128,0);
+  strip.setPixelColor(158,255,128,0);
+  strip.setPixelColor(159,255,128,0);
+  strip.setPixelColor(141,255,128,0);
+  strip.setPixelColor(142,255,128,0);
+  strip.setPixelColor(143,255,128,0);
+  strip.setPixelColor(144,255,128,0);
+  strip.setPixelColor(145,255,128,0);
+  strip.setPixelColor(146,255,128,0);
+  strip.setPixelColor(147,255,128,0);
+  strip.setPixelColor(148,255,128,0);
+  strip.setPixelColor(149,255,128,0);
+  strip.setPixelColor(134,255,128,0);
+  strip.setPixelColor(135,255,128,0);
+  strip.setPixelColor(136,255,128,0);
+  strip.setPixelColor(124,255,128,0);
+  strip.setPixelColor(125,255,128,0);
+  strip.setPixelColor(126,255,128,0);
+  strip.setPixelColor(114,255,128,0);
+  strip.setPixelColor(115,255,128,0);
+  strip.setPixelColor(116,255,128,0);
+  strip.setPixelColor(104,255,128,0);
+  strip.setPixelColor(105,255,128,0);
+  strip.setPixelColor(106,255,128,0);
+  strip.setPixelColor(94,255,128,0);
+  strip.setPixelColor(95,255,128,0);
+  strip.setPixelColor(96,255,128,0);
+  delay(3000);
+  fadeGrid(Color(0,0,0), Color(0,0,0), 8, 300);
   Serial.print(F("POST Finished"));
 
   chuck.begin();
@@ -268,7 +303,7 @@ void screenTest(){
     {
       wall[i][k] = 7;
       drawGame();
-      delay(100); //devserial: drop from 500ms to 100ms
+      delay(100);    //devserial: drop from 500ms to 100ms
     }
   }
 }
@@ -525,7 +560,7 @@ byte getCommand(){
     	 colorGrid(Color(0, 255, 0));
      }
      strip.show();
-      delay(75); //devserial: drop from 250ms to 75ms.. I'm not sure what the normaly cycle rate on an nes would be but its problably >10/sec
+      delay(75);              //devserial: drop from 250ms to 75ms.. I'm not sure what the normaly cycle rate on an nes would be but its problably >10/sec
   }
  
   if (useAi){
@@ -818,7 +853,7 @@ void nextBrick(){
   currentBrick.positionX = round(FIELD_WIDTH / 2) - 2;
   currentBrick.positionY = -3;
   
-  if ( TROLLBRICK ) //devserial: trollbrick check 
+  if ( TROLLBRICK )                              //devserial: trollbrick check 
   {
     currentBrick.type = random(8);
   } else {
@@ -851,7 +886,7 @@ void flashLine( int line ){
     state = !state;
     drawWall();
     updateDisplay();
-    delay(100); //devserial: dropped from 200ms to 100ms, line flashes 6 times so this is .6 second on a break instead of 1.2 sec
+    delay(100);                //devserial: dropped from 200ms to 100ms, line flashes 6 times so this is 1/2 second on a break instead of 1.2 sec
   }
 
 }
