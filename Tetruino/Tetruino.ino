@@ -306,7 +306,7 @@ void play(){
 
 		// if we're not on the AI, and there is a real command
 		// but < 7 loops have gone by, pretend it didn't happen.
-		if (!useAi && command < 4 && ct < 7) {
+		if (!useAi && command < 4 && ct < 4 /*7*/) { //scola: old was 7 4 for more responsive NES control
 			Serial.print(F("SKIPPED"));
 			Serial.println(ct);
 		} else { // ok, we can process this command.
@@ -574,7 +574,7 @@ byte getCommand(){
     Serial.print(y);
     Serial.println(F(")"));
     playerMove = DOWN;
-    move_sound(); //devserial
+    //move_sound(); //devserial //scola:removed, don't need piece move sound on down direction.
   }
   chuck.update();
   return playerMove;
@@ -650,6 +650,7 @@ bool checkCollision()
         if(x >= 0 && y >= 0 && wall[x][y] != 0)
         {
           //this is another brick IN the wall!
+          piece_drop_sound(); //devserial
           return true;
         }
         else if( x < 0 || x >= FIELD_WIDTH )
@@ -660,7 +661,7 @@ bool checkCollision()
         else if( y >= FIELD_HEIGHT )
         {
           //below sea level
-          piece_drop_sound(); //devserial
+          //piece_drop_sound(); //devserial
           return true;
         }
       }
@@ -1073,13 +1074,14 @@ void showlogo() {		//devserial: tetris logo test
   int logopix[]={
   151,152,153,154,155,156,157,158,159,
   140,141,142,143,144,145,146,147,148,
+	      134,135,136,
 	      123,124,125,
 	      114,115,116,
               103,104,105,
 	      94,95,96
                };
   int i;
-  for (i = 0; i<logopix[0]; i++) {
+  for (i = 0; i<33; i++) {
 	  strip.setPixelColor(logopix[i],255,128,0);
 	  delay(15);
 	  strip.show();
