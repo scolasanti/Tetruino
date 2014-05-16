@@ -86,6 +86,14 @@ byte state = 0; //scola: initial value of NESpad "state"
 //weight given to the number of holes for ai
 #define HOLE_WEIGHT 3
 
+// SOUND SYSTEM
+#define MOVE_BLOCK  430  //20ms delay
+#define ROTATE_BLOCK_1 1250 //70ms delay
+#define ROTATE_BLOCK_2  680//30ms delay
+#define PIECE_DROP 90 //40ms delay
+#define BREAKLINE_1 220 //140ms delay
+#define BREAKLINE_2 420 //40ms delay
+
 unsigned long  next_tick = 0;
 unsigned long bounce_tick = 0;
 static PROGMEM prog_uint16_t bricks[ brick_count ][4] = {
@@ -546,21 +554,27 @@ byte getCommand(){
   if (chuck.buttonZ || state & NES_A || state & NES_UP || state & NES_B){ //scola: checks for UP or NES_A or NES_B
     Serial.println(F("Button Z pushed."));
     playerMove = UP;
+    rotate_sound_1();
+    delay(60);
+    rotate_sound_2();
   } else if (x > 75 || state & NES_RIGHT){
     Serial.print(F("RIGHT: Joy X > 75.("));
     Serial.print(x);
     Serial.println(F(")"));
     playerMove = RIGHT;
+    move_sound(); //devserial
   } else if (x < -75000 || state & NES_LEFT){
     Serial.print(F("LEFT: Joy X < -75.("));
     Serial.print(x);
     Serial.println(F(")"));
     playerMove = LEFT;
+    move_sound(); //devserial
   } else if ( y < -7500 || state & NES_DOWN ){
     Serial.print(F("DOWN: Joy Y < -75.("));
     Serial.print(y);
     Serial.println(F(")"));
     playerMove = DOWN;
+    move_sound(); //devserial
   }
   chuck.update();
   return playerMove;
@@ -574,7 +588,6 @@ bool checkRotate( bool direction )
   rotate( direction );
   bool result = !checkCollision();
   rotate( !direction );
-
   return result;
 }
 
@@ -647,6 +660,7 @@ bool checkCollision()
         else if( y >= FIELD_HEIGHT )
         {
           //below sea level
+          piece_drop_sound(); //devserial
           return true;
         }
       }
@@ -808,7 +822,6 @@ bool clearLine()
           }
         }
       }
-
       return true; //line removed.
     }
   }
@@ -854,9 +867,10 @@ void flashLine( int line ){
     state = !state;
     drawWall();
     updateDisplay();
+    break_line_sound_1();  //devserial
     delay(100);                //devserial: dropped from 200ms to 100ms, line flashes 6 times so this is 1/2 second on a break instead of 1.2 sec
   }
-
+  break_line_sound_2(); //devserial
 }
 
 
@@ -1071,3 +1085,21 @@ void showlogo() {		//devserial: tetris logo test
 	  strip.show();
 	}
   }
+void move_sound(){
+    tone(8, MOVE_BLOCK, 20);
+}
+void rotate_sound_1(){
+   tone(8, ROTATE_BLOCK_1, 70);
+}
+void rotate_sound_2(){
+    tone(8, ROTATE_BLOCK_2, 30);
+}
+void piece_drop_sound(){
+   tone(8, PIECE_DROP, 120);
+}
+void break_line_sound_1(){
+   tone(8, BREAKLINE_1, 140);
+}
+void break_line_sound_2(){
+   tone(8, BREAKLINE_2, 40);
+}
