@@ -54,8 +54,8 @@ RGB LEDS data is on pin 1
 #define    LEDS FIELD_HEIGHT * FIELD_WIDTH
 
 //NESpad initialization
-NESpad nintendo = NESpad(4,5,6); //(scola) sets pins for controller strobe/clock/data per NESpad.h
-byte state = 0; //(scola) initial value of NESpad "state"
+NESpad nintendo = NESpad(4,5,6); //scola: sets pins for controller strobe/clock/data per NESpad.h
+byte state = 0; //scola: initial value of NESpad "state"
 
 //constants and initialization
 #define UP  0
@@ -65,8 +65,8 @@ byte state = 0; //(scola) initial value of NESpad "state"
 #define brick_count 8
 
 #define FULL 128
-#define HALF 8 //(scola) set a lower brightness def for testing
-#define setBright FULL //(scola) global def for current brightness setting, choose FULL or HALF, defined above
+#define HALF 8 //scola: set a lower brightness def for testing
+#define setBright FULL //scola: global def for current brightness setting, choose FULL or HALF, defined above
 #define WHITE 0xFF
 #define OFF 0
 
@@ -141,7 +141,7 @@ static PROGMEM prog_uint16_t bricks[ brick_count ][4] = {
 
 //8 bit RGB colors of blocks
 //RRRGGGBB
-//(scola) change to 24 bit color
+//scola: change to 24 bit color
 static PROGMEM prog_uint8_t brick_colors[brick_count]={
   0b00011111, //cyan
   0b10000010, //purple
@@ -196,7 +196,7 @@ uint16_t computeAddress(int row, int col){
 
 byte wall[FIELD_WIDTH][FIELD_HEIGHT];
 //The 'wall' is the 2D array that holds all bricks that have already 'fallen' into place
-//(scola) this may need to be altered to be larger than the visible play field
+//scola: this may need to be altered to be larger than the visible play field
 
 bool aiCalculatedAlready = false;
 bool useAi = true;
@@ -521,7 +521,7 @@ byte getCommand(){
   int y = chuck.readJoyY();
   if (chuck.buttonC || state & NES_SELECT) {
     Serial.println(F("Button C pushed. OR SELECT pushed"));
-     useAi = !useAi; //(scola)
+     useAi = !useAi; //scola:
      if (useAi) {
     	 colorGrid(Color(255, 0, 0));
      } else {
@@ -543,7 +543,7 @@ byte getCommand(){
   }
  
  
-  if (chuck.buttonZ || state & NES_A || state & NES_UP || state & NES_B){ //(scola)checks for UP or NES_A or NES_B
+  if (chuck.buttonZ || state & NES_A || state & NES_UP || state & NES_B){ //scola: checks for UP or NES_A or NES_B
     Serial.println(F("Button Z pushed."));
     playerMove = UP;
   } else if (x > 75 || state & NES_RIGHT){
@@ -974,7 +974,7 @@ void gameOver()
   fadeGrid(Color(255, 0, 0), Color(255,255,255),0, 100);
   fadeGrid(Color(255,255,255), Color(0,0,0), 8, 200);
   delay(1500);
- // dissolveGrid(5, 250); //(scola) this is cool, fix it to work better
+ // dissolveGrid(5, 250); //scola: this is cool, fix it to work better
 
   newGame();
 
