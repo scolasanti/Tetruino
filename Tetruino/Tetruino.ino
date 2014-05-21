@@ -245,7 +245,8 @@ Adafruit_WS2801 strip = Adafruit_WS2801(LEDS);
 
 void setup(){
 
-  Serial.begin(115200); 
+  Serial.begin(115200);
+  randomSeed(analogRead(0)); //scola: seeds random with noise from empty pin 0 input.
   strip.begin();
 
   //Pre-Operating Self Test of LED grid. //50 steps default, reduce to make faste
