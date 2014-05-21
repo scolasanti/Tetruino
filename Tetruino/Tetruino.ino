@@ -21,13 +21,11 @@
 */ 
 
 
-
 /* Notes
 Analog 2 is pin 2
 LED is on pin 0
 RGB LEDS data is on pin 1
 */
-
 
 #include <Wire.h>
 #include <WiiChuck.h>
@@ -87,12 +85,12 @@ byte state = 0; //scola: initial value of NESpad "state"
 #define HOLE_WEIGHT 3
 
 // SOUND SYSTEM
-#define MOVE_BLOCK  430  //20ms delay
-#define ROTATE_BLOCK_1 1250 //70ms delay
-#define ROTATE_BLOCK_2  680//30ms delay
-#define PIECE_DROP 90 //40ms delay
-#define BREAKLINE_1 220 //140ms delay
-#define BREAKLINE_2 420 //40ms delay
+#define MOVETONE  430  //20ms delay
+#define ROTTONE1 1250 //70ms delay
+#define ROTTONE2  680//30ms delay
+#define DROPTONE 90 //40ms delay
+#define BREAKTONE1 220 //140ms delay
+#define BREAKTONE2 420 //40ms delay
 
 unsigned long  next_tick = 0;
 unsigned long bounce_tick = 0;
@@ -202,7 +200,7 @@ uint16_t computeAddress(int row, int col){
 //const unsigned int score_per_line          = 300;
 
 
-byte wall[FIELD_WIDTH][FIELD_HEIGHT];
+byte wall[FIELD_WIDTH][FIELD_HEIGHT]; //Field height +2 to solve missing bricks?
 //The 'wall' is the 2D array that holds all bricks that have already 'fallen' into place
 //scola: this may need to be altered to be larger than the visible play field
 
@@ -555,27 +553,27 @@ byte getCommand(){
   if (chuck.buttonZ || state & NES_A || state & NES_UP || state & NES_B){ //scola: checks for UP or NES_A or NES_B
     Serial.println(F("Button Z pushed."));
     playerMove = UP;
-    rotate_sound_1();
+    soundRotate1();
     delay(60);
-    rotate_sound_2();
+    soundRotate2();
   } else if (x > 75 || state & NES_RIGHT){
     Serial.print(F("RIGHT: Joy X > 75.("));
     Serial.print(x);
     Serial.println(F(")"));
     playerMove = RIGHT;
-    move_sound(); //devserial
+    soundMOVE(); //devserial
   } else if (x < -75000 || state & NES_LEFT){
     Serial.print(F("LEFT: Joy X < -75.("));
     Serial.print(x);
     Serial.println(F(")"));
     playerMove = LEFT;
-    move_sound(); //devserial
+    soundMOVE(); //devserial
   } else if ( y < -7500 || state & NES_DOWN ){
     Serial.print(F("DOWN: Joy Y < -75.("));
     Serial.print(y);
     Serial.println(F(")"));
     playerMove = DOWN;
-    //move_sound(); //devserial //scola:removed, don't need piece move sound on down direction.
+    //soundMOVE(); //devserial //scola:removed, don't need piece move sound on down direction.
   }
   chuck.update();
   return playerMove;
@@ -651,7 +649,7 @@ bool checkCollision()
         if(x >= 0 && y >= 0 && wall[x][y] != 0)
         {
           //this is another brick IN the wall!
-          piece_drop_sound(); //devserial
+          soundDrop(); //devserial
           return true;
         }
         else if( x < 0 || x >= FIELD_WIDTH )
@@ -662,7 +660,7 @@ bool checkCollision()
         else if( y >= FIELD_HEIGHT )
         {
           //below sea level
-          //piece_drop_sound(); //devserial
+          //soundDrop(); //devserial
           return true;
         }
       }
@@ -869,10 +867,10 @@ void flashLine( int line ){
     state = !state;
     drawWall();
     updateDisplay();
-    break_line_sound_1();  //devserial
+    soundBreak1();  //devserial
     delay(100);                //devserial: dropped from 200ms to 100ms, line flashes 6 times so this is 1/2 second on a break instead of 1.2 sec
   }
-  break_line_sound_2(); //devserial
+  soundBreak2(); //devserial
 }
 
 
@@ -1088,21 +1086,21 @@ void showlogo() {		//devserial: tetris logo test
 	  strip.show();
 	}
   }
-void move_sound(){
-    tone(8, MOVE_BLOCK, 20);
+void soundMOVE(){
+    tone(8, MOVETONE, 20);
 }
-void rotate_sound_1(){
-   tone(8, ROTATE_BLOCK_1, 70);
+void soundRotate1(){
+   tone(8, ROTTONE1, 70);
 }
-void rotate_sound_2(){
-    tone(8, ROTATE_BLOCK_2, 30);
+void soundRotate2(){
+    tone(8, ROTTONE2, 30);
 }
-void piece_drop_sound(){
-   tone(8, PIECE_DROP, 120);
+void soundDrop(){
+   tone(8, DROPTONE, 120);
 }
-void break_line_sound_1(){
-   tone(8, BREAKLINE_1, 140);
+void soundBreak1(){
+   tone(8, BREAKTONE1, 140);
 }
-void break_line_sound_2(){
-   tone(8, BREAKLINE_2, 40);
+void soundBreak2(){
+   tone(8, BREAKTONE2, 40);
 }
