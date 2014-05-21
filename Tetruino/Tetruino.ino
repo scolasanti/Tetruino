@@ -564,19 +564,19 @@ byte getCommand(){
     Serial.print(x);
     Serial.println(F(")"));
     playerMove = RIGHT;
-    //soundMOVE(); //moved to actual move function instead of button press
+    //soundMove(); //moved to actual move function instead of button press
   } else if (x < -75000 || state & NES_LEFT){
     Serial.print(F("LEFT: Joy X < -75.("));
     Serial.print(x);
     Serial.println(F(")"));
     playerMove = LEFT;
-    //soundMOVE(); //moved to actual move function instead of button press
+    //soundMove(); //moved to actual move function instead of button press
   } else if ( y < -7500 || state & NES_DOWN ){
     Serial.print(F("DOWN: Joy Y < -75.("));
     Serial.print(y);
     Serial.println(F(")"));
     playerMove = DOWN;
-    //soundMOVE(); //devserial //scola:removed, don't need piece move sound on down direction.
+    //soundMove(); //devserial //scola:removed, don't need piece move sound on down direction.
   }
   chuck.update();
   return playerMove;
@@ -1089,7 +1089,7 @@ void showlogo() {		//devserial: tetris logo test
 	  strip.show();
 	}
   }
-void soundMOVE(){
+void soundMove(){
     tone(8, MOVETONE, 20);
 }
 void soundRotate1(){
