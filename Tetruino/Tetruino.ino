@@ -319,16 +319,19 @@ void play(){
 				bounce_tick = millis() + bounce_delay*5;
 				if ( checkRotate( 1 ) == true ) {
 					rotate( 1 );
+                                        soundRotate2();
 				}
 			} else if ( command == RIGHT ) {
 				if ( checkShift( -1, 0 ) == true ) {
 					Serial.println(F("SHIFT RIGHT"));
 					shift( -1, 0 );
+                                        soundMove();
 				}
 			} else if ( command == LEFT ) {
 				if ( checkShift( 1, 0 ) == true ) {
 					Serial.println(F("SHIFT LEFT"));
 					shift( 1, 0 );
+                                        soundMove();
 				}
 			} else if ( command == DOWN ) {
 				moveDown();
@@ -553,21 +556,21 @@ byte getCommand(){
   if (chuck.buttonZ || state & NES_A || state & NES_UP || state & NES_B){ //scola: checks for UP or NES_A or NES_B
     Serial.println(F("Button Z pushed."));
     playerMove = UP;
-    soundRotate1();
-    delay(60);
-    soundRotate2();
+    //soundRotate1();
+    //delay(60); //scola: removed this introduced delay in rotation control
+    //soundRotate2(); //moved to actual rotation function instead of button press.
   } else if (x > 75 || state & NES_RIGHT){
     Serial.print(F("RIGHT: Joy X > 75.("));
     Serial.print(x);
     Serial.println(F(")"));
     playerMove = RIGHT;
-    soundMOVE(); //devserial
+    //soundMOVE(); //moved to actual move function instead of button press
   } else if (x < -75000 || state & NES_LEFT){
     Serial.print(F("LEFT: Joy X < -75.("));
     Serial.print(x);
     Serial.println(F(")"));
     playerMove = LEFT;
-    soundMOVE(); //devserial
+    //soundMOVE(); //moved to actual move function instead of button press
   } else if ( y < -7500 || state & NES_DOWN ){
     Serial.print(F("DOWN: Joy Y < -75.("));
     Serial.print(y);
