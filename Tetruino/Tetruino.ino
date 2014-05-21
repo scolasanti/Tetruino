@@ -250,13 +250,13 @@ void setup(){
   strip.begin();
 
   //Pre-Operating Self Test of LED grid. //50 steps default, reduce to make faste
-  fadeGrid(Color(0,0,0), Color(255,0,0), 8, 50);   // fade from off to Red
-  fadeGrid(Color(255,0,0), Color(0,255,0), 8, 50); // fade from Red to Green
-  fadeGrid(Color(0,255,0), Color(0,0,255), 8, 50); // fade from Green to Blue
-  fadeGrid(Color(0,0,255), Color(0,0,0), 8, 50);   // fade from Blue to Off
+  fadeGrid(Color(0,0,0), Color(255,0,0), 8, 20);   // fade from off to Red
+  fadeGrid(Color(255,0,0), Color(0,255,0), 8, 20); // fade from Red to Green
+  fadeGrid(Color(0,255,0), Color(0,0,255), 8, 20); // fade from Green to Blue
+  fadeGrid(Color(0,0,255), Color(0,0,0), 8, 20);   // fade from Blue to Off
   showlogo();
   delay(3000);
-  fadeGrid(Color(0,0,0), Color(0,0,0), 8, 50);
+  //fadeGrid(Color(0,0,0), Color(0,0,0), 8, 50);
   Serial.print(F("POST Finished"));
 
   chuck.begin();
