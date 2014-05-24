@@ -1,18 +1,14 @@
 /*
+* A Tetris sketch for Arduino, designed to work with WS2801 pixel light strands.
 *
 * BASED ON:
+* Lansing Makers Network Tetris_WS2801
+* https://github.com/lansing-makers-network/Tetris_WS2801
 *
+* Which was based on LEDTetrisNeckTie by Bill Porter
+* http://www.billporter.info/2013/06/21/led-tetris-tie/
 *
-* LEDTetrisNeckTie.c
-*
-* Created: 6/21/2013 
-*  Author: Bill Porter
-*    www.billporter.info
-*
-*   AI player code by: Mofidul Jamal
-*
-*    Code to run a wicked cool LED Tetris playing neck tie. Details:              
-*         http://www.billporter.info/2013/06/21/led-tetris-tie/
+* AI player code by: Mofidul Jamal
 *
 *This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License.
 *To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/ or
@@ -553,25 +549,27 @@ byte getCommand(){
   }
  
  
-  if (chuck.buttonZ || state & NES_A || state & NES_UP || state & NES_B){ //scola: checks for UP or NES_A or NES_B
+ / // WiiChuck Controll Function 
+ //scola: need to add IFDEF or other to only use if wiiChuck is present or there will be movement override.)
+  if (chuck.buttonZ){
     Serial.println(F("Button Z pushed."));
     playerMove = UP;
     //soundRotate1();
     //delay(60); //scola: removed this introduced delay in rotation control
     //soundRotate2(); //moved to actual rotation function instead of button press.
-  } else if (x > 75 || state & NES_RIGHT){
+  } else if (x > 75){
     Serial.print(F("RIGHT: Joy X > 75.("));
     Serial.print(x);
     Serial.println(F(")"));
     playerMove = RIGHT;
     //soundMove(); //moved to actual move function instead of button press
-  } else if (x < -75000 || state & NES_LEFT){
+  } else if (x < -75){
     Serial.print(F("LEFT: Joy X < -75.("));
     Serial.print(x);
     Serial.println(F(")"));
     playerMove = LEFT;
     //soundMove(); //moved to actual move function instead of button press
-  } else if ( y < -7500 || state & NES_DOWN ){
+  } else if ( y < -75){
     Serial.print(F("DOWN: Joy Y < -75.("));
     Serial.print(y);
     Serial.println(F(")"));
@@ -581,8 +579,9 @@ byte getCommand(){
   chuck.update();
   return playerMove;
 }
+*/
 
-/* // starting NES Control Function
+// starting NES Control Function
   if (state & NES_A || state & NES_UP || state & NES_B){ //scola: checks for UP or NES_A or NES_B
     Serial.println(F("ROTATE Pressed"));
     playerMove = UP;
@@ -607,7 +606,7 @@ byte getCommand(){
   }
   chuck.update();
   return playerMove;
-} */
+}
 
 //checks if the next rotation is possible or not.
 bool checkRotate( bool direction )
@@ -1113,22 +1112,28 @@ void showlogo() {		//devserial: tetris logo test
 	  delay(15);
 	  strip.show();
 	}
-  }
+  }// end showlogo()
+  
 void soundMove(){
     tone(8, MOVETONE, 20);
 }
+
 void soundRotate1(){
    tone(8, ROTTONE1, 70);
 }
+
 void soundRotate2(){
     tone(8, ROTTONE2, 30);
 }
+
 void soundDrop(){
    tone(8, DROPTONE, 120);
 }
+
 void soundBreak1(){
    tone(8, BREAKTONE1, 140);
 }
+
 void soundBreak2(){
    tone(8, BREAKTONE2, 40);
 }
