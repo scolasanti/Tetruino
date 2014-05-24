@@ -580,9 +580,34 @@ byte getCommand(){
   }
   chuck.update();
   return playerMove;
-    
-    
 }
+
+/* // starting NES Control Function
+  if (state & NES_A || state & NES_UP || state & NES_B){ //scola: checks for UP or NES_A or NES_B
+    Serial.println(F("ROTATE Pressed"));
+    playerMove = UP;
+    
+  } else if (state & NES_RIGHT){
+    Serial.print(F("RIGHT Pressed"));
+    //Serial.print(x);
+    //Serial.println(F(")"));
+    playerMove = RIGHT;
+    
+  } else if (state & NES_LEFT){
+    Serial.print(F("LEFT Pressed"));
+    //Serial.print(x);
+    //Serial.println(F(")"));
+    playerMove = LEFT;
+
+  } else if (state & NES_DOWN ){
+    Serial.print(F("DOWN Pressed"));
+    //Serial.print(y);
+    //Serial.println(F(")"));
+    playerMove = DOWN;
+  }
+  chuck.update();
+  return playerMove;
+} */
 
 //checks if the next rotation is possible or not.
 bool checkRotate( bool direction )
