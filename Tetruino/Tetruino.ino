@@ -16,7 +16,6 @@
 *
 */ 
 
-
 /* Notes
 Analog 2 is pin 2
 LED is on pin 0
@@ -57,6 +56,7 @@ byte state = 0; //scola: initial value of NESpad "state"
 #define RIGHT  2
 #define LEFT  3
 #define brick_count 8
+//#define Use_WiiChuck //Comment out unless using WiiChuck as control input or you will constant player input to the left or right.
 
 #define FULL 128
 #define HALF 8 //scola: set a lower brightness def for testing
@@ -222,8 +222,6 @@ struct TBrick{
 //unsigned long  score        = 0;
 //unsigned long  score_lines      = 0;
 
-//WiiChuck
-
 WiiChuck chuck = WiiChuck();
 
 
@@ -248,6 +246,7 @@ void setup(){
   fadeGrid(Color(255,0,0), Color(0,255,0), 8, 20); // fade from Red to Green
   fadeGrid(Color(0,255,0), Color(0,0,255), 8, 20); // fade from Green to Blue
   fadeGrid(Color(0,0,255), Color(0,0,0), 8, 20);   // fade from Blue to Off
+  
   showlogo();
   delay(3000);
   //fadeGrid(Color(0,0,0), Color(0,0,0), 8, 50);
@@ -548,9 +547,7 @@ byte getCommand(){
       return DOWN;
   }
  
- 
- / // WiiChuck Controll Function 
- //scola: need to add IFDEF or other to only use if wiiChuck is present or there will be movement override.)
+ #ifdef Use_WiiChuck //WiiChuck Controller Function
   if (chuck.buttonZ){
     Serial.println(F("Button Z pushed."));
     playerMove = UP;
@@ -579,9 +576,8 @@ byte getCommand(){
   chuck.update();
   return playerMove;
 }
-*/
 
-// starting NES Control Function
+#else    // starting NES Control Function
   if (state & NES_A || state & NES_UP || state & NES_B){ //scola: checks for UP or NES_A or NES_B
     Serial.println(F("ROTATE Pressed"));
     playerMove = UP;
@@ -607,6 +603,7 @@ byte getCommand(){
   chuck.update();
   return playerMove;
 }
+#endif
 
 //checks if the next rotation is possible or not.
 bool checkRotate( bool direction )
