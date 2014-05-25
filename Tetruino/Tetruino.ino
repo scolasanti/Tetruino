@@ -14,7 +14,7 @@
 *To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/ or
 *send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
 *
-*/ 
+*/
 
 /* Notes
 Analog 2 is pin 2
@@ -56,7 +56,7 @@ byte state = 0; //scola: initial value of NESpad "state"
 #define RIGHT  2
 #define LEFT  3
 #define brick_count 8
-//#define Use_WiiChuck //Comment out unless using WiiChuck as control input or you will constant player input to the left or right.
+//#define Use_WiiChuck 1 //Comment out unless using WiiChuck as control input or results in constant input left/right.
 
 #define FULL 128
 #define HALF 8 //scola: set a lower brightness def for testing
@@ -167,7 +167,7 @@ uint16_t computeAddress(int row, int col){
 		base += FIELD_HEIGHT - 1;
 	}
 	uint16_t final = reverse == 1? base - row: base + row;
-	}
+	
 #else
 	if (row%2 == 0){
 		reversed = 1;
@@ -177,6 +177,7 @@ uint16_t computeAddress(int row, int col){
 		base += FIELD_WIDTH -1;
 	}
 	uint16_t final = reversed == 1 ? base - col: base + col;
+
 #endif
 	return final;
 }
@@ -228,9 +229,9 @@ WiiChuck chuck = WiiChuck();
 // Define the RGB pixel array and controller functions, 
 //Adafruit_NeoPixel strip = Adafruit_NeoPixel(LEDS, LEDDATAPIN, NEO_GRB + NEO_KHZ800);
 #ifdef LEDCLKPIN
-Adafruit_WS2801 strip = Adafruit_WS2801(LEDS, LEDDATAPIN, LEDCLKPIN);
+  Adafruit_WS2801 strip = Adafruit_WS2801(LEDS, LEDDATAPIN, LEDCLKPIN);
 #else
-Adafruit_WS2801 strip = Adafruit_WS2801(LEDS);
+  Adafruit_WS2801 strip = Adafruit_WS2801(LEDS);
 #endif
 
 
@@ -547,7 +548,7 @@ byte getCommand(){
       return DOWN;
   }
  
- #ifdef Use_WiiChuck //WiiChuck Controller Function
+ //#ifdef Use_WiiChuck //WiiChuck Controller Function
   if (chuck.buttonZ){
     Serial.println(F("Button Z pushed."));
     playerMove = UP;
@@ -575,9 +576,8 @@ byte getCommand(){
   }
   chuck.update();
   return playerMove;
-}
 
-#else    // starting NES Control Function
+//#else    // starting NES Control Function
   if (state & NES_A || state & NES_UP || state & NES_B){ //scola: checks for UP or NES_A or NES_B
     Serial.println(F("ROTATE Pressed"));
     playerMove = UP;
@@ -600,10 +600,10 @@ byte getCommand(){
     //Serial.println(F(")"));
     playerMove = DOWN;
   }
-  chuck.update();
+  //chuck.update();
   return playerMove;
 }
-#endif
+//#endif
 
 //checks if the next rotation is possible or not.
 bool checkRotate( bool direction )
@@ -1109,28 +1109,29 @@ void showlogo() {		//devserial: tetris logo test
 	  delay(15);
 	  strip.show();
 	}
-  }// end showlogo()
+  }  // end showlogo()
   
 void soundMove(){
     tone(8, MOVETONE, 20);
-}
+}  // end soundMove()
 
 void soundRotate1(){
    tone(8, ROTTONE1, 70);
-}
+}  // end soundRotate1()
 
 void soundRotate2(){
     tone(8, ROTTONE2, 30);
-}
+}  // end soundRotate2()
 
 void soundDrop(){
    tone(8, DROPTONE, 120);
-}
+}  //end SoundDrop()
 
 void soundBreak1(){
    tone(8, BREAKTONE1, 140);
-}
+}  // end soundBreak1()
 
 void soundBreak2(){
    tone(8, BREAKTONE2, 40);
-}
+}  // end soundBreak2()
+
