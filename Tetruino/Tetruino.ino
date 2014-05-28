@@ -56,7 +56,7 @@ byte state = 0; //scola: initial value of NESpad "state"
 #define RIGHT  2
 #define LEFT  3
 #define brick_count 8
-//#define Use_WiiChuck 1 //Comment out unless using WiiChuck as control input or results in constant input left/right.
+//#define Use_WiiChuck //Comment out unless using WiiChuck as control input or results in constant input left/right.
 
 #define FULL 128
 #define HALF 8 //scola: set a lower brightness def for testing
@@ -248,7 +248,7 @@ void setup(){
   fadeGrid(Color(0,255,0), Color(0,0,255), 8, 20); // fade from Green to Blue
   fadeGrid(Color(0,0,255), Color(0,0,0), 8, 20);   // fade from Blue to Off
   
-  showlogo();
+  showLogo();
   delay(3000);
   //fadeGrid(Color(0,0,0), Color(0,0,0), 8, 50);
   Serial.print(F("POST Finished"));
@@ -289,6 +289,8 @@ void play(){
 		performAI();
 	}
 
+        Serial.print(bounce_tick); //for debug
+        Serial.println(); // for debug
 	if (millis() > bounce_tick) {
 		byte command = getCommand();
 
@@ -521,6 +523,7 @@ byte getCommand(){
     */
     
   byte playerMove = 4;
+  //state = nintendo.buttons();
   chuck.update(); 
 
   int x = chuck.readJoyX();
@@ -534,7 +537,7 @@ byte getCommand(){
     	 colorGrid(Color(0, 255, 0));
      }
      strip.show();
-      delay(75);              //devserial: drop from 250ms to 75ms.. I'm not sure what the normaly cycle rate on an nes would be but its problably >10/sec
+      delay(250);              //devserial: drop from 250ms to 75ms.. I'm not sure what the normaly cycle rate on an nes would be but its problably >10/sec
   }
  
   if (useAi){
@@ -548,7 +551,7 @@ byte getCommand(){
       return DOWN;
   }
  
- //#ifdef Use_WiiChuck //WiiChuck Controller Function
+ #ifdef Use_WiiChuck //WiiChuck Controller Function
   if (chuck.buttonZ){
     Serial.println(F("Button Z pushed."));
     playerMove = UP;
@@ -575,9 +578,10 @@ byte getCommand(){
     //soundMove(); //devserial //scola:removed, don't need piece move sound on down direction.
   }
   chuck.update();
+  Serial.print(F("&&")); //debug only
   return playerMove;
 
-//#else    // starting NES Control Function
+#else    // starting NES Control Function
   if (state & NES_A || state & NES_UP || state & NES_B){ //scola: checks for UP or NES_A or NES_B
     Serial.println(F("ROTATE Pressed"));
     playerMove = UP;
@@ -601,9 +605,11 @@ byte getCommand(){
     playerMove = DOWN;
   }
   //chuck.update();
+  Serial.print(F("**"));
   return playerMove;
+  
+#endif
 }
-//#endif
 
 //checks if the next rotation is possible or not.
 bool checkRotate( bool direction )
@@ -1028,17 +1034,14 @@ void newGame()
   //score_lines = 0;
   //last_key = 0;
   clearWall();
-
   nextBrick();
 }
 
 //Update LED strips
 void updateDisplay(){
-
-  strip.show();
-  
-  
+  strip.show(); 
 }
+
 uint32_t Color(byte r, byte g, byte b) {
 	uint32_t c;
 	c = r;
@@ -1048,6 +1051,7 @@ uint32_t Color(byte r, byte g, byte b) {
 	c |= b;
 	return c;
 }
+
 void colorGrid(uint32_t color) {
 	int i;
 	for (i=0; i < strip.numPixels(); i++) {
@@ -1093,7 +1097,7 @@ void dissolveGrid(uint16_t pause, uint16_t steps) {
 	}
 }
 
-void showlogo() {		//devserial: tetris logo test
+void showLogo() {		//devserial: tetris logo test
   int logopix[]={
   151,152,153,154,155,156,157,158,159,
   140,141,142,143,144,145,146,147,148,
@@ -1103,13 +1107,14 @@ void showlogo() {		//devserial: tetris logo test
               103,104,105,
 	      94,95,96
                };
-  int i;
-  for (i = 0; i<33; i++) {
+               
+int i;
+for (i = 0; i<33; i++) {
 	  strip.setPixelColor(logopix[i],255,128,0);
 	  delay(15);
 	  strip.show();
-	}
-  }  // end showlogo()
+  }
+}  // end showLogo()
   
 void soundMove(){
     tone(8, MOVETONE, 20);
