@@ -1015,8 +1015,8 @@ void gameOver()
 	  strip.show();
 	  delay(80);
   }
-  fadeGrid(Color(255, 0, 0), Color(255,255,255),0, 100);
-  fadeGrid(Color(255,255,255), Color(0,0,0), 8, 200);
+  fadeGrid(Color(255, 0, 0), Color(255,255,255),0, 50);
+  fadeGrid(Color(255,255,255), Color(0,0,0), 8, 50);
   delay(1500);
  // dissolveGrid(5, 250); //scola: this is cool, fix it to work better
 
@@ -1109,7 +1109,7 @@ void showLogo() {		//devserial: tetris logo test
                };
                
 int i;
-for (i = 0; i<33; i++) {
+for (i = 0; i<26; i++) {
 	  strip.setPixelColor(logopix[i],255,128,0);
 	  delay(15);
 	  strip.show();
