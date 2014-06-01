@@ -85,12 +85,12 @@ word highScore = 0;
 #define HOLE_WEIGHT 3
 
 // SOUND SYSTEM
-#define MOVETONE  430  //20ms delay
-#define ROTTONE1 1250 //70ms delay
-#define ROTTONE2  680//30ms delay
-#define DROPTONE 90 //40ms delay
-#define BREAKTONE1 220 //140ms delay
-#define BREAKTONE2 420 //40ms delay
+const word MOVETONE = 430;   //20ms delay
+const word ROTTONE1 = 1250;  //70ms delay
+const word ROTTONE2  = 680;  //30ms delay
+const word DROPTONE = 90;    //40ms delay
+const word BREAKTONE1 = 220; //140ms delay
+const word BREAKTONE2 = 420; //40ms delay
 
 unsigned long  next_tick = 0;
 unsigned long bounce_tick = 0;
@@ -1080,7 +1080,7 @@ uint32_t Color(byte r, byte g, byte b) {
 }
 
 void colorGrid(uint32_t color) {
-	int i;
+	unsigned int i;
 	for (i=0; i < strip.numPixels(); i++) {
 		strip.setPixelColor(i, color);
 	}
@@ -1116,7 +1116,7 @@ void fadeGrid(uint32_t s_color, uint32_t e_color, uint16_t pause, float steps) {
 }
 
 void dissolveGrid(uint16_t pause, uint16_t steps) {
-	int i;
+	unsigned int i;
 	for (i = 0; i<steps; i++) {
 		strip.setPixelColor(random(0, strip.numPixels()), 0);
 		strip.show();
