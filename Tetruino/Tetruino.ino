@@ -75,6 +75,10 @@ byte state = 0; //scola: initial value of NESpad "state"
 #define tick_delay 400 //game speed
 #define max_level 9	
 #define bounce_delay 50
+float speedLevel = 1;
+word linesClear = 0;
+word highScore = 0;
+
 //weight given to the highest column for ai
 #define HIGH_COLUMN_WEIGHT 5
 //weight given to the number of holes for ai
@@ -251,7 +255,7 @@ void setup(){
   showLogo();
   delay(3000);
   //fadeGrid(Color(0,0,0), Color(0,0,0), 8, 50);
-  Serial.print(F("POST Finished"));
+  Serial.print(F("POST Finished\n"));
 
   chuck.begin();
   chuck.update();
@@ -289,8 +293,8 @@ void play(){
 		performAI();
 	}
 
-        Serial.print(bounce_tick); //for debug
-        Serial.println(); // for debug
+        //Serial.print(bounce_tick); //for debug
+        //Serial.println(); // for debug
 	if (millis() > bounce_tick) {
 		byte command = getCommand();
 
@@ -852,6 +856,21 @@ bool clearLine()
           }
         }
       }
+      linesClear = linesClear + 1;
+      if (linesClear % 10 == 0 && (speedLevel * tick_delay) >=90 ) { //results in a max tick delay of 40
+        speedLevel = speedLevel - 0.08;
+        Serial.print(F("========== L E V E L  U P ==========\n"));    
+      }
+      Serial.print(F("Score = "));
+      Serial.print(linesClear);
+      Serial.print(F("\t\t"));
+      Serial.print(F("Tick Delay = "));
+      Serial.print(tick_delay * speedLevel);
+      Serial.print(F("\t\t"));
+      Serial.print(F("Difficulty Boost = "));
+      Serial.print((1 - speedLevel) * 100);
+      Serial.print(F("%"));
+      Serial.print(F("\n"));
       return true; //line removed.
     }
   }
@@ -1028,11 +1047,19 @@ void gameOver()
 void newGame()
 {
 
-  //  level = 0;
-  // ticks = 0;
+  //level = 0;
+  //ticks = 0;
   //score = 0;
   //score_lines = 0;
   //last_key = 0;
+    if (linesClear > highScore){
+    highScore = linesClear;
+  }
+  Serial.print(F("High Score = "));
+  Serial.print(highScore);
+  Serial.print(F("\n"));
+  linesClear = 0;
+  speedLevel = 1;
   clearWall();
   nextBrick();
 }
@@ -1081,7 +1108,7 @@ void fadeGrid(uint32_t s_color, uint32_t e_color, uint16_t pause, float steps) {
 		//currentColor = map(i, 0, steps, min(s_color, e_color), max(s_color, e_color) );
 		//colorGrid(currentColor);
 
-		Serial.println((s_color_r + ((e_color_r - s_color_r) / steps)*i));
+		//Serial.println((s_color_r + ((e_color_r - s_color_r) / steps)*i));
 		colorGrid(Color((s_color_r + ((e_color_r - s_color_r) / steps)*i),(s_color_g + ((e_color_g - s_color_g) / steps)*i),(s_color_b + ((e_color_b - s_color_b) / steps)*i)));
 		strip.show();
 		delay(pause);
