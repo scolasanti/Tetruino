@@ -1108,7 +1108,7 @@ void fadeGrid(uint32_t s_color, uint32_t e_color, uint16_t pause, float steps) {
 		//currentColor = map(i, 0, steps, min(s_color, e_color), max(s_color, e_color) );
 		//colorGrid(currentColor);
 
-		//Serial.println((s_color_r + ((e_color_r - s_color_r) / steps)*i));
+		Serial.println((s_color_r + ((e_color_r - s_color_r) / steps)*i));
 		colorGrid(Color((s_color_r + ((e_color_r - s_color_r) / steps)*i),(s_color_g + ((e_color_g - s_color_g) / steps)*i),(s_color_b + ((e_color_b - s_color_b) / steps)*i)));
 		strip.show();
 		delay(pause);
