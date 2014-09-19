@@ -25,6 +25,8 @@ RGB LEDS data is on pin 1
 #include <Wire.h>
 #include <WiiChuck.h>
 #include <NESpad.h>
+#include <MemoryFree.h>
+//#include <SD.h> 
 
 //#include <Adafruit_NeoPixel.h>
 #include <SPI.h>
@@ -33,7 +35,7 @@ RGB LEDS data is on pin 1
 #include <avr/pgmspace.h>
 
 //HACKS---------
-#define TROLLBRICK 1            //devserial: 0 turns off troll brick which is a --__ shape
+#define TROLLBRICK 0            //devserial: 0 turns off troll brick which is a --__ shape
 
 //Constants for LED strip.  Hardware SPI can be used by commenting out these defines.
 #define LEDDATAPIN 2
@@ -58,7 +60,7 @@ byte state = 0; //scola: initial value of NESpad "state"
 #define brick_count 8
 //#define Use_WiiChuck //Comment out unless using WiiChuck as control input or results in constant input left/right.
 
-#define FULL 128
+#define FULL 255
 #define HALF 8 //scola: set a lower brightness def for testing
 #define setBright FULL //scola: global def for current brightness setting, choose FULL or HALF, defined above
 #define WHITE 0xFF
@@ -246,11 +248,12 @@ void setup(){
   randomSeed(analogRead(A0)); //scola: seeds random with noise from empty pin 0 input.
   strip.begin();
 
-  //Pre-Operating Self Test of LED grid. //50 steps default, reduce to make faste
+  //Pre-Operating Self Test of LED grid. //50 steps default, reduce to make faster
   fadeGrid(Color(0,0,0), Color(255,0,0), 8, 20);   // fade from off to Red
   fadeGrid(Color(255,0,0), Color(0,255,0), 8, 20); // fade from Red to Green
   fadeGrid(Color(0,255,0), Color(0,0,255), 8, 20); // fade from Green to Blue
   fadeGrid(Color(0,0,255), Color(0,0,0), 8, 20);   // fade from Blue to Off
+  
   
   showLogo();
   delay(3000);
@@ -871,6 +874,8 @@ bool clearLine()
       Serial.print((1 - speedLevel) * 100);
       Serial.print(F("%"));
       Serial.print(F("\n"));
+      Serial.print("freeMemory()=");
+      Serial.println(freeMemory());
       return true; //line removed.
     }
   }
@@ -1034,10 +1039,12 @@ void gameOver()
 	  strip.show();
 	  delay(80);
   }
-  fadeGrid(Color(255, 0, 0), Color(255,255,255),0, 50);
-  fadeGrid(Color(255,255,255), Color(0,0,0), 8, 50);
+  fadeGrid(Color(255, 0, 0), Color(0,0,0),0, 50);
+  //fadeGrid(Color(255,255,255), Color(0,0,0), 8, 50);
   delay(1500);
  // dissolveGrid(5, 250); //scola: this is cool, fix it to work better
+
+  showScore();
 
   newGame();
 
@@ -1124,24 +1131,269 @@ void dissolveGrid(uint16_t pause, uint16_t steps) {
 	}
 }
 
-void showLogo() {		//devserial: tetris logo test
-  int logopix[]={
-  151,152,153,154,155,156,157,158,
-  141,142,143,144,145,146,147,148,
-              134,135,
-              124,125,
-              114,115,
-              104,105,
-              94,95
-               };
-               
-int i;
-for (i = 0; i<26; i++) {
-	  strip.setPixelColor(logopix[i],255,128,0);
-	  delay(15);
-	  strip.show();
+void logoBuild(byte n,byte r,byte g,byte b){
+   strip.setPixelColor(n, Color(r,g,b));
+   delay(5);
+   strip.show();
+}
+
+void showScore() {
+//display high score in Red or Blue
+for (int i =0; i <highScore; i++){
+  strip.setPixelColor(i, Color(0,0,255));
+}
+strip.show();
+delay(50);
+
+//Count up currentScore in Red
+for (int i = 0; i < linesClear; i++ ){
+  strip.setPixelColor(i, Color(255,0,0));
+  strip.show();
+  delay(50);
+  }  
+  
+if (linesClear >= highScore){
+  rainbow(0);
+  delay(300);
+  } else {
+  delay(300);
   }
+
+} //end showScore()
+
+void rainbow(uint8_t wait) {
+  int i, j;
+   
+  for (j=0; j < 256; j++) {     // 3 cycles of all 256 colors in the wheel
+    for (i=0; i < linesClear; i++) {
+      strip.setPixelColor(i, Wheel( (i + j) % 255));
+    }  
+    strip.show();   // write all the pixels out
+    delay(wait);
+  }
+} //end rainbow()
+
+//Input a value 0 to 255 to get a color value.
+//The colours are a transition r - g -b - back to r
+uint32_t Wheel(byte WheelPos)
+{
+  if (WheelPos < 85) {
+   return Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+  } else if (WheelPos < 170) {
+   WheelPos -= 85;
+   return Color(255 - WheelPos * 3, 0, WheelPos * 3);
+  } else {
+   WheelPos -= 170; 
+   return Color(0, WheelPos * 3, 255 - WheelPos * 3);
+  }
+}
+
+void showLogo() {		//devserial: tetris logo test
+
+logoBuild(0,255,255,255);
+logoBuild(1,255,255,255);
+logoBuild(2,255,255,255);
+logoBuild(3,255,255,255);
+logoBuild(4,255,255,255);
+logoBuild(5,255,255,255);
+logoBuild(6,255,255,255);
+logoBuild(7,255,255,255);
+logoBuild(8,255,255,255);
+logoBuild(9,255,255,255);
+logoBuild(10,255,255,255);
+logoBuild(11,253,254,254);
+logoBuild(12,254,255,255);
+logoBuild(13,226,237,243);
+logoBuild(14,245,249,251);
+logoBuild(15,254,255,255);
+logoBuild(16,250,251,252);
+logoBuild(17,255,255,255);
+logoBuild(18,255,255,255);
+logoBuild(19,255,255,255);
+logoBuild(20,255,255,255);
+logoBuild(21,255,255,255);
+logoBuild(22,255,255,255);
+logoBuild(23,237,244,248);
+logoBuild(24,225,235,241);
+logoBuild(25,255,255,255);
+logoBuild(26,193,212,227);
+logoBuild(27,244,248,250);
+logoBuild(28,149,182,204);
+logoBuild(29,255,255,255);
+logoBuild(30,255,255,255);
+logoBuild(31,75,135,177);
+logoBuild(32,73,119,162);
+logoBuild(33,101,144,179);
+logoBuild(34,210,218,228);
+logoBuild(35,227,236,240);
+logoBuild(36,255,255,255);
+logoBuild(37,255,255,255);
+logoBuild(38,255,255,255);
+logoBuild(39,255,255,255);
+logoBuild(40,255,255,255);
+logoBuild(41,255,255,255);
+logoBuild(42,255,255,255);
+logoBuild(43,210,211,218);
+logoBuild(44,245,249,250);
+logoBuild(45,235,240,244);
+logoBuild(46,253,254,254);
+logoBuild(47,26,103,156);
+logoBuild(48,130,162,188);
+logoBuild(49,255,255,255);
+logoBuild(50,220,223,225);
+logoBuild(51,98,147,183);
+logoBuild(52,0,80,140);
+logoBuild(53,239,245,249);
+logoBuild(54,232,241,246);
+logoBuild(55,255,255,255);
+logoBuild(56,147,184,208);
+logoBuild(57,210,191,201);
+logoBuild(58,255,255,255);
+logoBuild(59,255,255,255);
+logoBuild(60,233,238,243);
+logoBuild(61,237,244,247);
+logoBuild(62,140,170,198);
+logoBuild(63,238,244,246);
+logoBuild(64,255,255,255);
+logoBuild(65,252,253,254);
+logoBuild(66,45,112,161);
+logoBuild(67,34,105,155);
+logoBuild(68,216,226,232);
+logoBuild(69,137,176,200);
+logoBuild(70,238,236,239);
+logoBuild(71,195,216,227);
+logoBuild(72,126,168,195);
+logoBuild(73,17,93,149);
+logoBuild(74,254,255,255);
+logoBuild(75,255,255,255);
+logoBuild(76,206,223,235);
+logoBuild(77,243,240,240);
+logoBuild(78,255,255,255);
+logoBuild(79,255,255,255);
+logoBuild(80,255,255,255);
+logoBuild(81,255,255,255);
+logoBuild(82,254,252,252);
+logoBuild(83,104,135,170);
+logoBuild(84,241,248,252);
+logoBuild(85,255,255,255);
+logoBuild(86,23,97,151);
+logoBuild(87,154,191,213);
+logoBuild(88,98,131,165);
+logoBuild(89,251,251,251);
+logoBuild(90,255,255,255);
+logoBuild(91,242,240,240);
+logoBuild(92,131,149,176);
+logoBuild(93,56,120,166);
+logoBuild(94,246,248,249);
+logoBuild(95,125,149,176);
+logoBuild(96,249,247,246);
+logoBuild(97,255,255,255);
+logoBuild(98,255,255,255);
+logoBuild(99,255,255,255);
+logoBuild(100,255,255,255);
+logoBuild(101,255,255,255);
+logoBuild(102,255,255,255);
+logoBuild(103,255,255,255);
+logoBuild(104,255,255,255);
+logoBuild(105,248,248,249);
+logoBuild(106,153,189,212);
+logoBuild(107,255,255,255);
+logoBuild(108,255,255,255);
+logoBuild(109,255,255,255);
+logoBuild(110,255,255,255);
+logoBuild(111,255,255,255);
+logoBuild(112,255,255,255);
+logoBuild(113,221,234,242);
+logoBuild(114,250,251,253);
+logoBuild(115,255,255,255);
+logoBuild(116,255,255,255);
+logoBuild(117,255,255,255);
+logoBuild(118,255,255,255);
+logoBuild(119,255,255,255);
+logoBuild(120,255,255,255);
+logoBuild(121,255,255,255);
+logoBuild(122,251,196,198);
+logoBuild(123,244,104,110);
+logoBuild(124,244,112,118);
+logoBuild(125,244,112,118);
+logoBuild(126,244,112,118);
+logoBuild(127,244,112,118);
+logoBuild(128,244,105,111);
+logoBuild(129,248,169,172);
+logoBuild(130,244,117,122);
+logoBuild(131,237,14,24);
+logoBuild(132,237,27,36);
+logoBuild(133,237,27,36);
+logoBuild(134,237,27,36);
+logoBuild(135,237,27,36);
+logoBuild(136,236,13,23);
+logoBuild(137,248,160,163);
+logoBuild(138,255,255,255);
+logoBuild(139,255,255,255);
+logoBuild(140,255,255,255);
+logoBuild(141,255,255,255);
+logoBuild(142,249,161,164);
+logoBuild(143,236,12,21);
+logoBuild(144,237,25,34);
+logoBuild(145,237,25,34);
+logoBuild(146,237,25,34);
+logoBuild(147,237,25,34);
+logoBuild(148,236,13,22);
+logoBuild(149,244,117,122);
+logoBuild(150,239,119,123);
+logoBuild(151,238,30,39);
+logoBuild(152,238,38,46);
+logoBuild(153,238,39,47);
+logoBuild(154,239,45,53);
+logoBuild(155,238,39,47);
+logoBuild(156,239,28,37);
+logoBuild(157,237,152,155);
+logoBuild(158,241,244,244);
+logoBuild(159,240,243,243);
+logoBuild(160,220,227,226);
+logoBuild(161,221,228,228);
+logoBuild(162,226,145,148);
+logoBuild(163,241,51,59);
+logoBuild(164,239,57,64);
+logoBuild(165,239,70,76);
+logoBuild(166,241,87,94);
+logoBuild(167,238,54,62);
+logoBuild(168,240,45,53);
+logoBuild(169,228,118,122);
+logoBuild(170,245,117,122);
+logoBuild(171,236,11,20);
+logoBuild(172,237,25,34);
+logoBuild(173,237,29,38);
+logoBuild(174,237,22,31);
+logoBuild(175,237,24,33);
+logoBuild(176,236,10,19);
+logoBuild(177,250,162,165);
+logoBuild(178,255,255,255);
+logoBuild(179,255,255,255);
+logoBuild(180,255,255,255);
+logoBuild(181,255,255,255);
+logoBuild(182,248,160,163);
+logoBuild(183,236,13,23);
+logoBuild(184,237,27,36);
+logoBuild(185,237,27,36);
+logoBuild(186,237,26,35);
+logoBuild(187,237,27,36);
+logoBuild(188,237,14,24);
+logoBuild(189,244,117,122);
+logoBuild(190,245,132,136);
+logoBuild(191,239,40,48);
+logoBuild(192,239,51,59);
+logoBuild(193,239,51,59);
+logoBuild(194,239,51,59);
+logoBuild(195,239,51,59);
+logoBuild(196,238,39,47);
+logoBuild(197,249,170,173);
+logoBuild(198,255,255,255);
+logoBuild(199,255,255,255);
+              
 }  // end showLogo()
+
+//void map
   
 void soundMove(){
     tone(8, MOVETONE, 20);
