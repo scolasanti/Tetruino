@@ -321,7 +321,7 @@ void play(){
 
 			// process the command
 			if ( command == UP ) {
-				bounce_tick = millis() + bounce_delay*5;
+				bounce_tick = millis() + bounce_delay*3; //test was 5
 				if ( checkRotate( 1 ) == true ) {
 					rotate( 1 );
                                         soundRotate2();
@@ -861,7 +861,7 @@ bool clearLine()
       }
       linesClear = linesClear + 1;
       if (linesClear % 10 == 0 && (speedLevel * tick_delay) >=90 ) { //results in a max tick delay of 40
-        speedLevel = speedLevel - 0.08;
+        speedLevel = speedLevel - 0.1; //old speedLevel - 0.08
         Serial.print(F("========== L E V E L  U P ==========\n"));    
       }
       Serial.print(F("Score = "));
@@ -1143,20 +1143,20 @@ for (int i =0; i <highScore; i++){
   strip.setPixelColor(i, Color(0,0,255));
 }
 strip.show();
-delay(50);
+delay(500);
 
 //Count up currentScore in Red
 for (int i = 0; i < linesClear; i++ ){
   strip.setPixelColor(i, Color(255,0,0));
   strip.show();
-  delay(50);
+  delay(100);
   }  
   
 if (linesClear >= highScore){
-  rainbow(0);
-  delay(300);
+    rainbow(0);
+    delay(1000);
   } else {
-  delay(300);
+    delay(1000);
   }
 
 } //end showScore()
